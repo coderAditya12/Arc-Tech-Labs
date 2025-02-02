@@ -17,10 +17,11 @@ import {
   fetchPostsSuccess,
 } from "../redux/PostSlice";
 
-const Home = () => {
+const posts = () => {
   const dispatch = useDispatch();
   const { posts, loading, error } = useSelector((state) => state.posts);
   const fetchData = async () => {
+    //simple async/await function to fetch posts
     try {
       dispatch(fetchPostsStart());
       const result = await fetch("https://jsonplaceholder.typicode.com/posts", {
@@ -61,6 +62,7 @@ const Home = () => {
         overflowX: "auto",
       }}
     >
+      {/* material UI table */}
       <Typography
         variant="h4"
         sx={{
@@ -182,4 +184,4 @@ const Home = () => {
   );
 };
 
-export default Home;
+export default posts;

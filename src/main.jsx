@@ -7,6 +7,7 @@ import { Provider } from "react-redux";
 
 createRoot(document.getElementById("root")).render(
   <StrictMode>
+    {/* redux provider */}
     <Provider store={store}>
       <App />
     </Provider>
