@@ -9,12 +9,20 @@ import {
   Box,
   Typography,
 } from "@mui/material";
-import React, { useEffect, useState } from "react";
+import React, { useEffect } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import {
+  fetchPostsFailure,
+  fetchPostsStart,
+  fetchPostsSuccess,
+} from "../redux/PostSlice";
 
 const Home = () => {
-  const [data, setData] = useState([]);
+  const dispatch = useDispatch();
+  const { posts, loading, error } = useSelector((state) => state.posts);
   const fetchData = async () => {
     try {
+      dispatch(fetchPostsStart());
       const result = await fetch("https://jsonplaceholder.typicode.com/posts", {
         method: "GET",
         headers: {
@@ -23,15 +31,23 @@ const Home = () => {
       });
       const json = await result.json();
       const displayData = json.slice(0, 20);
-      setData(displayData);
+      if (result.ok) {
+        dispatch(fetchPostsSuccess(displayData));
+      } else {
+        dispatch(fetchPostsFailure("failed to fetch posts"));
+      }
     } catch (error) {
       console.error(error);
+      dispatch(fetchPostsFailure(error.message));
     }
   };
 
   useEffect(() => {
     fetchData();
   }, []);
+  if (loading) {
+    return <p>Loading...</p>;
+  }
 
   return (
     <Box
@@ -110,7 +126,7 @@ const Home = () => {
             </TableRow>
           </TableHead>
           <TableBody>
-            {data.map((item) => (
+            {posts.map((item) => (
               <TableRow
                 key={item.id}
                 sx={{
